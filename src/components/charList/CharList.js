@@ -1,46 +1,32 @@
+import { useEffect, useState } from 'react';
+import MarvelService from '../../services/MarvelService';
+
 import './charList.scss';
-import abyss from '../../resources/img/abyss.jpg';
 
 const CharList = () => {
+
+    const [char, setChar] = useState([]);
+    const notImage = 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg';
+
+    let marvelService = new MarvelService();
+
+    useEffect(() => {
+        marvelService
+        .getAllCharacters()
+        .then(res => setChar(res))
+    }, [])
+
+
     return (
         <div className="char__list">
             <ul className="char__grid">
-                <li className="char__item">
-                    <img src={abyss} alt="abyss"/>
-                    <div className="char__name">Abyss</div>
-                </li>
-                <li className="char__item char__item_selected">
-                    <img src={abyss} alt="abyss"/>
-                    <div className="char__name">Abyss</div>
-                </li>
-                <li className="char__item">
-                    <img src={abyss} alt="abyss"/>
-                    <div className="char__name">Abyss</div>
-                </li>
-                <li className="char__item">
-                    <img src={abyss} alt="abyss"/>
-                    <div className="char__name">Abyss</div>
-                </li>
-                <li className="char__item">
-                    <img src={abyss} alt="abyss"/>
-                    <div className="char__name">Abyss</div>
-                </li>
-                <li className="char__item">
-                    <img src={abyss} alt="abyss"/>
-                    <div className="char__name">Abyss</div>
-                </li>
-                <li className="char__item">
-                    <img src={abyss} alt="abyss"/>
-                    <div className="char__name">Abyss</div>
-                </li>
-                <li className="char__item">
-                    <img src={abyss} alt="abyss"/>
-                    <div className="char__name">Abyss</div>
-                </li>
-                <li className="char__item">
-                    <img src={abyss} alt="abyss"/>
-                    <div className="char__name">Abyss</div>
-                </li>
+                {char.map((item) => 
+                    <li className="char__item" key={item.name}>
+                        <img src={item.thumbnail} 
+                             style={item.thumbnail===notImage ? {objectFit: 'contain'} : {objectFit: 'cover'}} alt="abyss" />
+                        <div className="char__name">{item.name}</div>
+                    </li>
+                )}
             </ul>
             <button className="button button__main button__long">
                 <div className="inner">load more</div>
