@@ -36,6 +36,7 @@ const CharInfo = ({charId}) => {
     }
 
     useEffect(updateChar, [charId])
+
     
     const skeleton = char || loading || error ? null : <Skeleton />;
     const errorMessage = error ? <ErrorMessage /> : null;

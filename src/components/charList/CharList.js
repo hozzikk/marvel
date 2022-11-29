@@ -7,28 +7,48 @@ import './charList.scss';
 
 const CharList = ({onSelectedChar}) => {
 
-    const [char, setChar] = useState([]);
+    const [charList, setCharList] = useState([]);
     const [error, setError] = useState(false);
     const [loading,setLoading] = useState(true);
-    const notImage = 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg';
+    const [newItemLoading, setNewItemLoading] = useState(false);
+    const [offset, setOffset] = useState(210);
+    const [charEnded, setCharEnded] = useState(false);
 
     let marvelService = new MarvelService();
 
     useEffect(() => {
-        marvelService
-        .getAllCharacters()
-        .then(onCharListLoaded)
-        .catch(onError);
+        onRequest();
     }, [])
 
-    const onError = () => {
+    const onRequest = (offset) => {
+        onCharListLoading();
+        marvelService
+        .getAllCharacters(offset)
+        .then(onCharListLoaded)
+        .catch(onError);
+    }
+
+    function onCharListLoading () {
+        setNewItemLoading(true);
+    }
+
+    function onError () {
         setLoading(false);
         setError(true);
     }
 
-    const onCharListLoaded = (charList) => {
-        setChar(charList)
+    function onCharListLoaded (newCharList) {
+        let ended = false;
+        if (newCharList.length < 9){
+            ended = true
+        }
+
+
+        setCharList(() => ([...charList, ...newCharList]))
         setLoading(false);
+        setNewItemLoading(false);
+        setOffset(() => (offset + 9))
+        setCharEnded(ended)
     }
 
     const charListView = (arr) => {
@@ -55,7 +75,7 @@ const CharList = ({onSelectedChar}) => {
         )
     }
 
-    const items = charListView(char);
+    const items = charListView(charList);
 
     const errorMessage = error ? <ErrorMessage /> : null;
     const spinner = loading ? <Spinner /> : null;
@@ -67,7 +87,11 @@ const CharList = ({onSelectedChar}) => {
             {errorMessage}
             {spinner}
             {content}
-            <button className="button button__main button__long">
+            <button 
+            className="button button__main button__long"
+            disabled={newItemLoading}
+            style={{'display': charEnded ? 'none' : 'block'}}
+            onClick={() => onRequest(offset)}>
                 <div className="inner">load more</div>
             </button>
         </div>
