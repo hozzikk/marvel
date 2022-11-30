@@ -2,6 +2,7 @@ import AppHeader from "../appHeader/AppHeader";
 import RandomChar from "../randomChar/RandomChar";
 import CharList from "../charList/CharList";
 import CharInfo from "../charInfo/CharInfo";
+import PropTypes from 'prop-types'
 
 import decoration from '../../resources/img/vision.png';
 import { useState } from "react";
@@ -24,6 +25,10 @@ const App = () => {
             </main>
         </div>
     )
+}
+
+CharList.propTypes = {
+    onSelectedChar: PropTypes.func.isRequired
 }
 
 export default App;

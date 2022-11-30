@@ -1,10 +1,11 @@
-import './charInfo.scss';
-import thor from '../../resources/img/thor.jpeg';
 import MarvelService from '../../services/MarvelService';
 import { useState, useEffect } from 'react';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
 import Skeleton from '../skeleton/Skeleton';
+import PropTypes from 'prop-types'
+
+import './charInfo.scss';
 
 const CharInfo = ({charId}) => {
     const [char, setChar] = useState(null)
@@ -52,8 +53,6 @@ const CharInfo = ({charId}) => {
     )
 }
 
-export default CharInfo;
-
 
 const View = ({char}) => {
     const {name, description, thumbnail, homepage, wiki, comics} = char;
@@ -91,3 +90,9 @@ const View = ({char}) => {
         </>
     )
 }
+
+CharInfo.propTypes = {
+    charId: PropTypes.number
+}
+
+export default CharInfo;
