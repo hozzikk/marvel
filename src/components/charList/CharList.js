@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import MarvelService from '../../services/MarvelService';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
@@ -6,13 +6,14 @@ import Spinner from '../spinner/Spinner';
 import './charList.scss';
 
 const CharList = ({onSelectedChar}) => {
-
+    
     const [charList, setCharList] = useState([]);
     const [error, setError] = useState(false);
     const [loading,setLoading] = useState(true);
     const [newItemLoading, setNewItemLoading] = useState(false);
     const [offset, setOffset] = useState(210);
     const [charEnded, setCharEnded] = useState(false);
+    const itemRefs = [];
 
     let marvelService = new MarvelService();
 
@@ -42,8 +43,6 @@ const CharList = ({onSelectedChar}) => {
         if (newCharList.length < 9){
             ended = true
         }
-
-
         setCharList(() => ([...charList, ...newCharList]))
         setLoading(false);
         setNewItemLoading(false);
@@ -51,18 +50,34 @@ const CharList = ({onSelectedChar}) => {
         setCharEnded(ended)
     }
 
+
+    const setRef = (ref) => {
+        itemRefs.push(ref)
+    }
+
+    const focusOnItem = (id) => {
+        itemRefs.forEach(item => item.classList.remove('char__item_selected'));
+        itemRefs[id].classList.add('char__item_selected');
+        itemRefs[id].focus();
+    }
+
+
     const charListView = (arr) => {
-        const items =  arr.map((item) => {
+        
+        const items =  arr.map((item, i) => {
             let imgStyle = {'objectFit' : 'cover'};
             if (item.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
                 imgStyle = {'objectFit' : 'unset'};
             }
-            
             return (
                 <li 
                     className="char__item"
                     key={item.id}
-                    onClick={() => onSelectedChar(item.id)}>
+                    ref={setRef}
+                    onClick={() => {
+                        onSelectedChar(item.id);
+                        // focusOnItem(i);
+                    }}>
                         <img src={item.thumbnail} alt={item.name} style={imgStyle}/>
                         <div className="char__name">{item.name}</div>
                 </li>
