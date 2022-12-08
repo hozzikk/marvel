@@ -1,4 +1,4 @@
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 import { useState, useEffect } from 'react';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
@@ -9,31 +9,23 @@ import './charInfo.scss';
 
 const CharInfo = ({charId}) => {
     const [char, setChar] = useState(null)
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(false)
 
 
-    let marvelService = new MarvelService();
+    const {loading, error, getCharacter, clearError} =  useMarvelService();
 
     const updateChar = () => {
         if(!charId) {
             return;
         }
-        setLoading(true)
-        marvelService
-        .getCharacter(charId)
-        .then(onCharLoaded)
-        .catch(onError)
+
+        clearError();
+        getCharacter(charId)
+            .then(onCharLoaded)
     }
 
-    const onError = () => {
-        setLoading(false);
-        setError(true);
-    }
 
     const onCharLoaded = (char) => {
         setChar(char);
-        setLoading(false);
     }
 
     useEffect(updateChar, [charId])
