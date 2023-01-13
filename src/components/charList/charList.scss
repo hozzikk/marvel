@@ -7,6 +7,9 @@
         grid-template-columns: 650px 425px;
         column-gap: 25px;
         align-items: start;
+        grid-template-areas:
+        "A B"
+        "AB BA";
     }
     &__grid {
         display: grid;
